@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Registro Medicamentos</title>
+</head>
+<body>
+  <h2>Registro de Toma de Medicamento</h2>
+
+  <label>Medicamento:</label>
+  <select id="medicamento">
+    <option>Levotiroxina</option>
+    <option>Insulina</option>
+    <option>Amlodipino</option>
+    <!-- más opciones -->
+  </select><br><br>
+
+  <label>Dosis:</label>
+  <input type="text" id="dosis"><br><br>
+
+  <label>Hora de Toma:</label>
+  <select id="hora_toma">
+    <option>Desayuno</option>
+    <option>Comida</option>
+    <option>Cena</option>
+  </select><br><br>
+
+  <button onclick="registrar()">Registrar</button>
+
+  <p id="respuesta"></p>
+
+  <script>
+    function registrar() {
+      const data = {
+        medicamento: document.getElementById("medicamento").value,
+        dosis: document.getElementById("dosis").value,
+        hora_toma: document.getElementById("hora_toma").value
+      };
+
+      fetch("https://script.google.com/macros/s/AKfycbxQGdroF-VJpP1sp7xiUZuxDfy0uVwpIMcuZG7gEsV9l9WXOMe6rUIv404YEaKWsfWb/exec", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(res => res.text())
+      .then(txt => document.getElementById("respuesta").innerText = txt)
+      .catch(err => console.error("Error:", err));
+    }
+  </script>
+</body>
+</html>
