@@ -1,51 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Registro Medicamentos</title>
+  <title>Registro de Medicamentos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+    }
+    label {
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <h2>Registro de Toma de Medicamento</h2>
 
-  <label>Medicamento:</label>
+  <h2>Registro de Toma de Medicamentos</h2>
+
+  <label for="medicamento">Medicamento:</label><br>
   <select id="medicamento">
-    <option>Levotiroxina</option>
-    <option>Insulina</option>
-    <option>Amlodipino</option>
-    <!-- más opciones -->
-  </select><br><br>
+    <option value="">-- Selecciona uno --</option>
+    <option value="Levotiroxina (100 mg)">Levotiroxina (100 mg)</option>
+    <option value="Insulina">Insulina</option>
+    <option value="Amlodipino 5 mg">Amlodipino 5 mg</option>
+    <option value="Losartan 50 mg">Losartan 50 mg</option>
+    <option value="Lovibon 5 mg">Lovibon 5 mg</option>
+    <option value="Bicarbonato de Sodio 500 mg">Bicarbonato de Sodio 500 mg</option>
+    <option value="Simbin (Suplemento) 540 mg">Simbin (Suplemento) 540 mg</option>
+    <option value="Miccil bumetanida 1 mg">Miccil bumetanida 1 mg</option>
+    <option value="Jardianz 25 mg">Jardianz 25 mg</option>
+    <option value="Ketosteril 630 mg">Ketosteril 630 mg</option>
+  </select>
+  <br><br>
 
-  <label>Dosis:</label>
-  <input type="text" id="dosis"><br><br>
-
-  <label>Hora de Toma:</label>
-  <select id="hora_toma">
-    <option>Desayuno</option>
-    <option>Comida</option>
-    <option>Cena</option>
-  </select><br><br>
+  <label>Fecha y Hora de Registro:</label><br>
+  <input type="text" id="fechaHora" readonly>
+  <br><br>
 
   <button onclick="registrar()">Registrar</button>
 
-  <p id="respuesta"></p>
+  <p id="respuesta" style="font-weight: bold; color: green;"></p>
 
   <script>
+    // Mostrar fecha y hora actual al cargar
+    function actualizarFechaHora() {
+      const ahora = new Date();
+      const formato = ahora.toLocaleString("es-MX");
+      document.getElementById("fechaHora").value = formato;
+    }
+    actualizarFechaHora(); // Llamada inicial
+
     function registrar() {
-      const data = {
-        medicamento: document.getElementById("medicamento").value,
-        dosis: document.getElementById("dosis").value,
-        hora_toma: document.getElementById("hora_toma").value
-      };
+      const medicamento = document.getElementById("medicamento").value;
+      const fechaHora = document.getElementById("fechaHora").value;
+
+      if (!medicamento) {
+        alert("Por favor selecciona un medicamento.");
+        return;
+      }
+
+      const data = { medicamento, fechaHora };
 
       fetch("https://script.google.com/macros/s/AKfycbxQGdroF-VJpP1sp7xiUZuxDfy0uVwpIMcuZG7gEsV9l9WXOMe6rUIv404YEaKWsfWb/exec", {
         method: "POST",
         body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
+        headers: {
+          "Content-Type": "application/json"
+        }
       })
       .then(res => res.text())
-      .then(txt => document.getElementById("respuesta").innerText = txt)
-      .catch(err => console.error("Error:", err));
+      .then(txt => {
+        document.getElementById("respuesta").innerText = txt;
+        actualizarFechaHora(); // Refrescar fecha
+        document.getElementById("medicamento").selectedIndex = 0;
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        document.getElementById("respuesta").innerText = "Error al registrar.";
+      });
     }
   </script>
+
 </body>
 </html>
